@@ -1,35 +1,17 @@
-// ============================================================
-// Google Sheets Email Sender — Google Apps Script
-// ============================================================
-//
-// SHEET LAYOUT (expected columns, row 1 = headers):
-//
-//   A: Email        — recipient email address
-//   B: Name         — recipient name (used in greeting)
-//   C: Subject      — email subject line
-//   D: Body         — email body (plain text; supports {{name}} placeholder)
-//   E: Status       — filled automatically after sending ("Sent" / "Error: …")
-//
-// You can customize columns in the CONFIG object below.
-// ============================================================
-
 const CONFIG = {
-  sheetName: "Sheet1",       // name of the sheet tab to read from
-  headerRow: 1,              // row number that contains column headers
+  sheetName: "Sheet1",
+  headerRow: 1,
   cols: {
-    email:   1,  // column A
-    name:    2,  // column B
-    subject: 3,  // column C
-    body:    4,  // column D
-    status:  5,  // column E
+    email:   1,
+    name:    2,
+    subject: 3,
+    body:    4,
+    status:  5,
   },
-  senderName: "Your Name",  // display name on outgoing emails
-  skipAlreadySent: true,     // skip rows where Status is already "Sent"
+  senderName: "Your Name",
+  skipAlreadySent: true,
 };
 
-/**
- * Adds a custom menu to the Google Sheets UI.
- */
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("Email Sender")
@@ -38,9 +20,6 @@ function onOpen() {
     .addToUi();
 }
 
-/**
- * Main function — iterates over every data row and sends a personalized email.
- */
 function sendEmails() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.sheetName);
   if (!sheet) {
@@ -94,9 +73,6 @@ function sendEmails() {
   );
 }
 
-/**
- * Sends only the first data row — useful for testing your template.
- */
 function sendTestEmail() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.sheetName);
   if (!sheet) {
@@ -132,17 +108,10 @@ function sendTestEmail() {
   }
 }
 
-/**
- * Replaces {{name}} (case-insensitive) with the recipient's name.
- * Add more placeholders here as needed.
- */
 function personalizeBody(body, name) {
   return body.replace(/\{\{name\}\}/gi, name);
 }
 
-/**
- * Wraps plain text in minimal HTML so line breaks render properly in email.
- */
 function convertToHtml(plainText) {
   const escaped = plainText
     .replace(/&/g, "&amp;")
